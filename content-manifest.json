@@ -2,7 +2,7 @@
   "schema_version": 1,
   "candidate": "R2",
   "status": "REVIEW_READY_NOT_PUBLISHED_NOT_SUBMITTED",
-  "created_utc": "2026-11-09T16:12:03.448818+00:00",
+  "created_utc": "2026-11-09T16:36:01.555554+00:00",
   "inference_sources": {
     "assets/original-model-files.json": "4b8c2a9a9cc0a7291b080cf67a6836712f4c3482e43745a3ceb83f014f236786",
     "native/conditioner-patch-manifest.json": "b7a875410d2c20b00a81a89b68c13a9fb63e4780893e4d4e255dbad2475b3db5",
@@ -70,6 +70,10 @@
     "DEPENDENCIES.md": {
       "bytes": 1838,
       "sha256": "62c076332e95adfcb3ca8e1e6ccff041ffb1068c379868d184bdf19694f91f1a"
+    },
+    "evidence/host-regression-20261110-r1.json": {
+      "bytes": 1451,
+      "sha256": "5c50517d8737ac120a972a31c4de57e6581c0528a714756f0dade39e8582180c"
     },
     "evidence/offline-build-preparation.json": {
       "bytes": 1094,
@@ -692,8 +696,8 @@
       "sha256": "f8089be65b7ff895bc8606f96100ab5d56c5e96eb26edbfc8b4c340c34fa3f85"
     },
     "tests/test_process_supervisor.py": {
-      "bytes": 3206,
-      "sha256": "850d4fa55b08311dd2614c561e2a91bd1d8e8fa64bbca597bc1d83b5b7675b46"
+      "bytes": 3301,
+      "sha256": "de3206c4dfa4cf06c6df4b18aeb85a30cc7b684b94d14eadef9599846b136ce1"
     },
     "tests/test_streaming_storage.cpp": {
       "bytes": 3737,

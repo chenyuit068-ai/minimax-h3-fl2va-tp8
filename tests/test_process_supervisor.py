@@ -29,6 +29,7 @@ os.kill(os.getpid(),signal.SIGTERM)
         facade=root=Path(temp)/'facade';(facade/'runtime').mkdir(parents=True)
         shutil.copy2(package/'run_fl2va.py',facade/'run_fl2va.py')
         shutil.copy2(package/'runtime/h3_process_supervisor.py',facade/'runtime/h3_process_supervisor.py')
+        shutil.copy2(package/'runtime/h3_source_audit.py',facade/'runtime/h3_source_audit.py')
         (facade/'preflight.py').write_text("def check(*args,**kwargs):return dict(status='PREFLIGHT_ONLY_PASS',errors=[],devices=[])\n")
         repo=Path(temp)/'fake-model-entry';(repo/'examples').mkdir(parents=True)
         (repo/'examples/minimax_h3.py').write_text('''import json,os,signal,sys

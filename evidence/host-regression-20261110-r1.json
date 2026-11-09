@@ -1,0 +1,41 @@
+{
+  "status": "HOST_REGRESSION_AND_BASH_SYNTAX_PASS_NOT_NATIVE_BUILD_OR_DEVICE_TEST",
+  "observed_utc": "2026-11-09T16:36:01.448467+00:00",
+  "fixture_change": "Copy the real h3_source_audit module into the temporary wrapper test facade.",
+  "tests": [
+    {
+      "program": "tests/test_framework_handoff_host.py",
+      "platform": "Windows CPython 3.12.15",
+      "exit_code": 0,
+      "result": "PASS_HOST_HANDOFF_ORDERING_OWNERSHIP_RESTORATION_NOT_GPU_VALIDATION"
+    },
+    {
+      "program": "tests/test_process_supervisor.py",
+      "platform": "Windows CPython 3.12.15",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "program": "tests/test_process_supervisor.py",
+      "platform": "Ubuntu-24.04 WSL CPython",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "program": "scripts/run_validated_sample.sh",
+      "platform": "Ubuntu-24.04 WSL bash -n",
+      "exit_code": 0,
+      "result": "SYNTAX_PASS_NOT_EXECUTED"
+    }
+  ],
+  "process_supervisor_checks": [
+    "worker signal recorded as failure",
+    "earlier invocation audit unchanged",
+    "zero exit without completion rejected",
+    "actual wrapper persists running audit before model entry"
+  ],
+  "test_source_sha256": "de3206c4dfa4cf06c6df4b18aeb85a30cc7b684b94d14eadef9599846b136ce1",
+  "gpu_operations_executed": false,
+  "model_generation_executed": false,
+  "inference_source_identity_unchanged": true
+}
