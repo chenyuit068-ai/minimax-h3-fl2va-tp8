@@ -1,0 +1,23 @@
+{
+  "status": "OFFLINE_SOURCE_AND_BUILD_DEPENDENCIES_PREPARED_NOT_A_NATIVE_BUILD",
+  "started_utc": "2026-11-09T11:22:35.168953+00:00",
+  "gpu_operations_executed": false,
+  "model_inference_executed": false,
+  "phases": [
+    {
+      "name": "reconstruct_sources",
+      "returncode": 0,
+      "seconds": 2.77070683599959,
+      "log": "reconstruct_sources.log",
+      "sha256": "0d4e4e75b28704a19d357b98a79195b4b32e994df976f512078aa7ca17d6cb39"
+    }
+  ],
+  "inputs": {
+    "h3-source-snapshots.tar.gz": "cc33835e8d7e48410fb0ab6098905e3fe6494b52dc9ce13244f938d5ac808890",
+    "xmake-v3.0.5.tar.gz": "b947666281222f79e082283b6f84e68880c499305890f6ab8b03b8bac82456dc",
+    "xmake-repo-offline.tar.gz": "c4c25e202ce1236d51e4478e0fa08e4148505c474f403812912516557df81ab2",
+    "boost-build-prerequisites-20261107-r1.zip": "2515b43db92e4da760abf1a054dbe337aa5ef231f3b1f4db61cfa6f67a3bc8c5"
+  },
+  "offline_boost_lookup_sha256": "d22e20290d68077adbd1ff8b221bf7562932b3ad99be00d153d3ef8aa6a08f23",
+  "source_reconstruction_sha256": "282d71ab486084259fbe27dd5008bbc1edc6acd6238a6b8875c5b57f3dae3948"
+}

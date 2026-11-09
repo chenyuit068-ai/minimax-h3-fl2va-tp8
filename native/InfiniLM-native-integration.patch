@@ -1,0 +1,70 @@
+--- a/csrc/models/minimax_h3/minimax_h3_transformer.cpp
++++ b/csrc/models/minimax_h3/minimax_h3_transformer.cpp
+@@ -1,4 +1,5 @@
+ #include "minimax_h3_transformer.hpp"
++#include "h3_nine_bridge.hpp"
+ 
+ #include "../../global_state/global_state.hpp"
+ #include "../models_registry.hpp"
+@@ -54,8 +55,18 @@
+ infinicore::Tensor apply_adaln(const infinicore::Tensor &normalized,
+                                const infinicore::Tensor &scale,
+                                const infinicore::Tensor &shift) {
++    infinicore::Tensor fused;
++    if (infinilm::h3_nine::try_compute("adaln", normalized, scale, shift, fused)) return fused;
+     auto scaled = infinicore::op::mul(normalized, scale);
+     return infinicore::op::add(infinicore::op::add(normalized, scaled), shift);
++}
++
++infinicore::Tensor apply_gated_residual(const infinicore::Tensor &x,
++                                              const infinicore::Tensor &gate,
++                                              const infinicore::Tensor &branch) {
++    infinicore::Tensor fused;
++    if (infinilm::h3_nine::try_compute("residual", x, gate, branch, fused)) return fused;
++    return infinicore::op::add(x, infinicore::op::mul(gate, branch));
+ }
+ 
+ void require_tensor(const std::optional<infinicore::Tensor> &tensor,
+@@ -174,7 +185,9 @@
+         query = query_squeezed->unsqueeze(0);
+         key = key_squeezed->unsqueeze(0);
+     }
+-    auto output = infinicore::op::mha(query, key, value, std::nullopt, scale_, false);
++    infinicore::Tensor output;
++    if (!infinilm::h3_nine::try_compute("attention", query, key, value, output))
++        output = infinicore::op::mha(query, key, value, std::nullopt, scale_, false);
+     output = output->view({batch_size, sequence_length, inner_dim_});
+     return linear_forward(out_proj_, output);
+ }
+@@ -337,13 +350,12 @@
+     auto normalized = norm1_->forward(hidden_states);
+     normalized = apply_adaln(normalized, scale_msa, shift_msa);
+     auto attention_output = attn_->forward(normalized, rope, position_ids, rotary_cos_sin_cache);
+-    auto output = infinicore::op::add(
+-        hidden_states, infinicore::op::mul(gate_msa, attention_output));
++    auto output = apply_gated_residual(hidden_states, gate_msa, attention_output);
+ 
+     normalized = norm2_->forward(output);
+     normalized = apply_adaln(normalized, scale_mlp, shift_mlp);
+     auto mlp_output = ff_->forward(normalized);
+-    output = infinicore::op::add(output, infinicore::op::mul(gate_mlp, mlp_output));
++    output = apply_gated_residual(output, gate_mlp, mlp_output);
+     return output;
+ }
+ 
+--- a/csrc/pybind11/bindings.cc
++++ b/csrc/pybind11/bindings.cc
+@@ -2,6 +2,7 @@
+ 
+ #include "cache/cache.hpp"
+ #include "engine/engine.hpp"
++#include "../models/minimax_h3/h3_nine_bindings.hpp"
+ 
+ namespace py = pybind11;
+ 
+@@ -12,4 +13,5 @@
+     infinilm::engine::bind_hook_registry(m);
+     infinilm::engine::distributed::bind_dist_config(m);
+     infinilm::engine::bind_infer_engine(m);
++    infinilm::h3_nine::bind(m);
+ }

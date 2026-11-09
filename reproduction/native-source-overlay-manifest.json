@@ -1,0 +1,66 @@
+{
+  "status": "ACTUAL_COMPILED_PARTICIPANT_SOURCE_OVERLAY_HASHES_PASS",
+  "source_files": 26,
+  "parts": [
+    {
+      "file": "native-source-overlay-00.b64",
+      "bytes": 12000,
+      "sha256": "3e50f1b2145b6d5abab3ca1d15d0f55606c218c146600b55bc8ace62ba7a918c"
+    },
+    {
+      "file": "native-source-overlay-01.b64",
+      "bytes": 12000,
+      "sha256": "2f54983b6f74d5dc0645aa41ea1f59a775d1b35e0f5c9febce118c8a747aceac"
+    },
+    {
+      "file": "native-source-overlay-02.b64",
+      "bytes": 12000,
+      "sha256": "6ab7e94f3589e6e9bf19315172a02f8aab9073b45576708389bbb9e6be0b7a8a"
+    },
+    {
+      "file": "native-source-overlay-03.b64",
+      "bytes": 12000,
+      "sha256": "082ff458913919e0f97db136c27d5af2587aa147532c310ad3ae6311fa950542"
+    },
+    {
+      "file": "native-source-overlay-04.b64",
+      "bytes": 12000,
+      "sha256": "ad610e9dc42a10198dabcaf3422b4a74fc9502dfb4cc9fd84ba75018215a9570"
+    },
+    {
+      "file": "native-source-overlay-05.b64",
+      "bytes": 12000,
+      "sha256": "69873aa33dfbea0be95cc4403c8c5e7f34185b0b5ffad3a37acefa668668d0a9"
+    },
+    {
+      "file": "native-source-overlay-06.b64",
+      "bytes": 12000,
+      "sha256": "1b0a25c403de5c7deba0ec9749014a98fc06aa2babd085a6be55980785aa8a30"
+    },
+    {
+      "file": "native-source-overlay-07.b64",
+      "bytes": 12000,
+      "sha256": "5d46841a01476ffcbe54c34854cdbc251664ec40ae4e0787c0374bf5f9c26ec5"
+    },
+    {
+      "file": "native-source-overlay-08.b64",
+      "bytes": 12000,
+      "sha256": "d9a7cde8f4c9e7d27f750ab32602668ff767523d1da8cb5cd7868b877f024b0b"
+    },
+    {
+      "file": "native-source-overlay-09.b64",
+      "bytes": 12000,
+      "sha256": "6ad3a2921eb4a33cf6b724ca379300f2f1fd99f4940f27214f45d08bb5cd8ba2"
+    },
+    {
+      "file": "native-source-overlay-10.b64",
+      "bytes": 3856,
+      "sha256": "a75dc85769e937d6c3c467465afe3ea9f1c9552cb237e33d0ba91187e06f3a0d"
+    }
+  ],
+  "payload_bytes": 382287,
+  "payload_sha256": "ceeabf7044ed82b8b03b530a3e396848057f53e8399d7bdc8203df3b8c4ee80d",
+  "compressed_bytes": 92890,
+  "build_report_sha256": "f56fc36114719bc6246a43ec18ab07e3ecd1eebd3d08cf3226b44ea3f8488584",
+  "source_archive_sha256": "cc33835e8d7e48410fb0ab6098905e3fe6494b52dc9ce13244f938d5ac808890"
+}

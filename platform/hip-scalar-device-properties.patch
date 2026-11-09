@@ -1,0 +1,76 @@
+--- a/triton/backends/hcu/driver.py
++++ b/triton/backends/hcu/driver.py
+@@ -126,6 +126,8 @@
+ 
+ 
+ def compile_module_from_src(src, name):
++    if name == "hip_utils" and os.environ.get("TRITON_HIP_SCALAR_PROPERTIES") == "1":
++        src = "#define H3_TRITON_SCALAR_PROPERTIES 1\n" + src
+     if _native_hip_include:
+         headers = [Path(_native_hip_include) / "hip" / name for name in ("hip_runtime.h", "hip_runtime_api.h")]
+         fingerprint = hashlib.sha256(b"".join(header.read_bytes() for header in headers)).hexdigest()
+@@ -169,6 +171,18 @@
+         mod = compile_module_from_src(src, "hip_utils")
+         self.load_binary = mod.load_binary
+         self.get_device_properties = mod.get_device_properties
++        if os.environ.get("TRITON_HIP_SCALAR_PROPERTIES") == "1":
++            def scalar_device_properties(device):
++                import torch
++                properties = mod.get_device_properties(device)
++                # Torch already resolves the platform's architecture metadata.
++                # All numeric capacities below come from typed HIP attributes.
++                architecture = torch.cuda.get_device_properties(device).gcnArchName
++                if not architecture.startswith("gfx"):
++                    raise RuntimeError("Cannot identify the actual HIP architecture")
++                properties["arch"] = architecture
++                return properties
++            self.get_device_properties = scalar_device_properties
+ 
+ 
+ # -------------------- Launcher ----------------------------
+--- a/triton/backends/hcu/driver.c
++++ b/triton/backends/hcu/driver.c
+@@ -40,6 +40,7 @@
+ // https://github.com/ROCm/clr/commit/0479cdb3dd30ef58718cad44e424bd793c394cc0
+ #define HIP_SYMBOL_LIST(FOR_EACH_ERR_FN, FOR_EACH_STR_FN)                      \
+   FOR_EACH_STR_FN(hipGetErrorString, hipError_t hipError)                      \
++  FOR_EACH_ERR_FN(hipDeviceGetAttribute, int *value, hipDeviceAttribute_t attribute, int deviceId) \
+   FOR_EACH_ERR_FN(hipGetDeviceProperties, H3HipDeviceProperties *prop,          \
+                   int deviceId)                                                \
+   FOR_EACH_ERR_FN(hipModuleLoadDataEx, hipModule_t *module, const void *image, \
+@@ -142,6 +143,27 @@
+   if (!PyArg_ParseTuple(args, "i", &device_id))
+     return NULL;
+ 
++#ifdef H3_TRITON_SCALAR_PROPERTIES
++  int values[8] = {0};
++  const hipDeviceAttribute_t attributes[8] = {
++      hipDeviceAttributeMaxSharedMemoryPerBlock,
++      hipDeviceAttributeMaxRegistersPerBlock,
++      hipDeviceAttributeMultiprocessorCount,
++      hipDeviceAttributeClockRate,
++      hipDeviceAttributeMemoryClockRate,
++      hipDeviceAttributeMemoryBusWidth,
++      hipDeviceAttributeWarpSize,
++      hipDeviceAttributeMaxThreadsPerMultiProcessor};
++  for (int index = 0; index < 8; ++index) {
++    HIP_CHECK(hipSymbolTable.hipDeviceGetAttribute(&values[index], attributes[index], device_id));
++  }
++  return Py_BuildValue(
++      "{s:i, s:i, s:i, s:i, s:i, s:i, s:s, s:i, s:i}",
++      "max_shared_mem", values[0], "max_num_regs", values[1],
++      "multiprocessor_count", values[2], "sm_clock_rate", values[3],
++      "mem_clock_rate", values[4], "mem_bus_width", values[5],
++      "arch", "", "warpSize", values[6], "max_threads_per_sm", values[7]);
++#else
+   H3HipDeviceProperties props;
+   HIP_CHECK(hipSymbolTable.hipGetDeviceProperties(&props, device_id));
+ 
+@@ -153,6 +175,7 @@
+       props.clockRate, "mem_clock_rate", props.memoryClockRate, "mem_bus_width",
+       props.memoryBusWidth, "arch", props.gcnArchName, "warpSize",
+       props.warpSize, "max_threads_per_sm", props.maxThreadsPerMultiProcessor);
++#endif
+ }
+ 
+ static PyObject *loadBinary(PyObject *self, PyObject *args) {

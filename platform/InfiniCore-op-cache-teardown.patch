@@ -1,0 +1,55 @@
+--- a/include/infinicore/ops/common/cache.hpp
++++ b/include/infinicore/ops/common/cache.hpp
+@@ -50,26 +50,40 @@
+     }
+ 
+     void clear() {
+-        Device current_device = context::getDevice();
++        bool populated = false;
++        for (const auto &vec : caches_) {
++            for (const auto &cache : vec) {
++                populated = populated || !cache.getAllItems().empty();
++            }
++        }
++        if (!populated) {
++            caches_ = {};
++            return;
++        }
+ 
++        // Thread-local descriptors can outlive ContextImpl during process exit.
++        // Their cleanup needs a device, not an allocated Core runtime/stream.
++        // Use InfiniRT directly and restore its state; never revive ContextImpl.
++        auto check = [](infiniStatus_t status) {
++            if (status != INFINI_STATUS_SUCCESS) {
++                throw std::runtime_error("InfiniRT device selection failed during operator cache cleanup");
++            }
++        };
++        infiniDevice_t current_type;
++        int current_index;
++        check(infinirtGetDevice(&current_type, &current_index));
+         for (size_t type_idx = 0; type_idx < caches_.size(); ++type_idx) {
+             auto &vec = caches_[type_idx];
+             for (size_t dev_idx = 0; dev_idx < vec.size(); ++dev_idx) {
+-                Device target_device(static_cast<Device::Type>(type_idx), dev_idx);
+-
+-                if (current_device != target_device) {
+-                    context::setDevice(target_device);
+-                }
+-
++                if (vec[dev_idx].getAllItems().empty()) continue;
++                auto type = static_cast<infiniDevice_t>(type_idx);
++                bool switched = type != current_type || static_cast<int>(dev_idx) != current_index;
++                if (switched) check(infinirtSetDevice(type, static_cast<int>(dev_idx)));
+                 vec[dev_idx].clear();
+-
+-                if (current_device != target_device) {
+-                    context::setDevice(current_device);
+-                }
++                if (switched) check(infinirtSetDevice(current_type, current_index));
+             }
+             vec.clear();
+         }
+-
+         caches_ = {};
+     }
+ 

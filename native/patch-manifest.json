@@ -1,0 +1,12 @@
+[
+  {
+    "file": "csrc/models/minimax_h3/minimax_h3_transformer.cpp",
+    "reference_sha256": "90de0ebeddb0dab86805657323f1fe59a40116e3bb1f9b394c59aafb5c4a53bb",
+    "modified_sha256": "763f443fca72503e0a8111e5438b62b6f6bdbe5f576ae3e4746d22dfb1614586"
+  },
+  {
+    "file": "csrc/pybind11/bindings.cc",
+    "reference_sha256": "b92332be41504bf6566313b2d26e5cfb18470a1311a32baa4c6f55f77747720c",
+    "modified_sha256": "e201db71ec402930d9744490b5397fb74811a69f887c69d3056271a064bb5bb9"
+  }
+]

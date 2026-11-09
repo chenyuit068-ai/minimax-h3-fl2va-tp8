@@ -1,0 +1,27 @@
+--- a/triton/backends/hcu/driver.py
++++ b/triton/backends/hcu/driver.py
+@@ -10,7 +10,8 @@
+ from triton.backends.driver import GPUDriver
+ 
+ dirname = os.path.dirname(os.path.realpath(__file__))
+-include_dir = [os.path.join(dirname, "../hcu","include")]
++_native_hip_include = os.environ.get("TRITON_HIP_INCLUDE_PATH")
++include_dir = ([_native_hip_include] if _native_hip_include else []) + [os.path.join(dirname, "../hcu", "include")]
+ 
+ 
+ def _find_already_mmapped_dylib_on_linux(lib_name):
+@@ -125,6 +126,14 @@
+ 
+ 
+ def compile_module_from_src(src, name):
++    if _native_hip_include:
++        headers = [Path(_native_hip_include) / "hip" / name for name in ("hip_runtime.h", "hip_runtime_api.h")]
++        fingerprint = hashlib.sha256(b"".join(header.read_bytes() for header in headers)).hexdigest()
++        src = "// Native HIP ABI headers: " + fingerprint + "\n" + src
++    if name == "hip_utils" and os.environ.get("TRITON_HIP_PROPERTIES_V2") == "1":
++        if not _native_hip_include:
++            raise RuntimeError("Native v2 properties require matching DTK headers")
++        src = "#define H3_TRITON_NATIVE_PROPERTIES_V2 1\n" + src
+     key = hashlib.sha256(src.encode("utf-8")).hexdigest()
+     cache = get_cache_manager(key)
+     cache_path = cache.get_file(f"{name}.so")

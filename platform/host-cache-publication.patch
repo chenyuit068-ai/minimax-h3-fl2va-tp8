@@ -1,0 +1,46 @@
+--- a/triton/runtime/cache.py
++++ b/triton/runtime/cache.py
+@@ -2,6 +2,7 @@
+ import json
+ import os
+ import uuid
++import tempfile
+ from abc import ABC, abstractmethod
+ from pathlib import Path
+ from typing import Dict, List, Optional
+@@ -117,22 +118,19 @@
+             data = str(data)
+         assert self.lock_path is not None
+         filepath = self._make_path(filename)
+-        # Random ID to avoid any collisions
+-        rnd_id = str(uuid.uuid4())
+-        # we use the PID in case a bunch of these around so we can see what PID made it
+-        pid = os.getpid()
+-        # use temp dir to be robust against program interruptions
+-        temp_dir = os.path.join(self.cache_dir, f"tmp.pid_{pid}_{rnd_id}")
+-        os.makedirs(temp_dir, exist_ok=True)
+-        temp_path = os.path.join(temp_dir, filename)
+-
+-        mode = "wb" if binary else "w"
+-        with open(temp_path, mode) as f:
+-            f.write(data)
+-        # Replace is guaranteed to be atomic on POSIX systems if it succeeds
+-        # so filepath cannot see a partial write
+-        os.replace(temp_path, filepath)
+-        os.removedirs(temp_dir)
++        # A sibling temporary file also works on mounts that reject
++        # cross-directory rename. Keep atomic publication and unique writers.
++        descriptor, temp_path = tempfile.mkstemp(
++            prefix=f".tmp.pid_{os.getpid()}_", dir=os.path.dirname(filepath))
++        try:
++            mode = "wb" if binary else "w"
++            with os.fdopen(descriptor, mode) as stream:
++                stream.write(data)
++            # Readers see either the previous complete file or the new one.
++            os.replace(temp_path, filepath)
++        finally:
++            if os.path.exists(temp_path):
++                os.unlink(temp_path)
+         return filepath
+ 
+ 

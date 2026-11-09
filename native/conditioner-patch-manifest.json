@@ -1,0 +1,7 @@
+[
+  {
+    "file": "csrc/models/qwen3_5/qwen3_5_vision.cpp",
+    "reference_sha256": "b4085ad0d72d714e986ed180549ba0aca44170404e8e2f225b2c378c2ee20718",
+    "modified_sha256": "2fe1ea615b4c6e5e2bfec957d0d995e8768f229cf0c96e5f3c20680e73f3b669"
+  }
+]

@@ -1,0 +1,52 @@
+--- a/triton/backends/hcu/driver.c
++++ b/triton/backends/hcu/driver.c
+@@ -2,7 +2,13 @@
+ // clang-format off
+ // hip_depreated.h needs definitions from hip_runtime.h.
+ #include <hip/hip_runtime.h>
++#include <stdbool.h>
++#ifdef H3_TRITON_NATIVE_PROPERTIES_V2
++typedef hipDeviceProp_t H3HipDeviceProperties;
++#else
+ #include <hip/hip_deprecated.h>
++typedef hipDeviceProp_tR0000 H3HipDeviceProperties;
++#endif
+ // clang-format on
+ #define PY_SSIZE_T_CLEAN
+ #include <Python.h>
+@@ -34,7 +40,7 @@
+ // https://github.com/ROCm/clr/commit/0479cdb3dd30ef58718cad44e424bd793c394cc0
+ #define HIP_SYMBOL_LIST(FOR_EACH_ERR_FN, FOR_EACH_STR_FN)                      \
+   FOR_EACH_STR_FN(hipGetErrorString, hipError_t hipError)                      \
+-  FOR_EACH_ERR_FN(hipGetDeviceProperties, hipDeviceProp_tR0000 *prop,          \
++  FOR_EACH_ERR_FN(hipGetDeviceProperties, H3HipDeviceProperties *prop,          \
+                   int deviceId)                                                \
+   FOR_EACH_ERR_FN(hipModuleLoadDataEx, hipModule_t *module, const void *image, \
+                   unsigned int numOptions, hipJitOption *options,              \
+@@ -94,7 +100,16 @@
+   }
+ 
+   HIP_SYMBOL_LIST(QUERY_EACH_FN, QUERY_EACH_FN)
+-
++#ifdef H3_TRITON_NATIVE_PROPERTIES_V2
++  dlerror();
++  void *propertiesFn = dlsym(lib, "hipGetDeviceProperties_v2");
++  if (!propertiesFn) {
++    PyErr_SetString(PyExc_RuntimeError, "DTK hipGetDeviceProperties_v2 is unavailable");
++    dlclose(lib);
++    return false;
++  }
++  *(void **)&hipSymbolTable.hipGetDeviceProperties = propertiesFn;
++#endif
+   return true;
+ }
+ 
+@@ -127,7 +142,7 @@
+   if (!PyArg_ParseTuple(args, "i", &device_id))
+     return NULL;
+ 
+-  hipDeviceProp_tR0000 props;
++  H3HipDeviceProperties props;
+   HIP_CHECK(hipSymbolTable.hipGetDeviceProperties(&props, device_id));
+ 
+   // create a struct to hold device properties

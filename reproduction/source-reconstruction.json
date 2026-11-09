@@ -1,0 +1,166 @@
+{
+  "status": "ACTUAL_NATIVE_SOURCE_RECONSTRUCTION_PASS_NOT_A_REBUILD",
+  "source_archive_sha256": "cc33835e8d7e48410fb0ab6098905e3fe6494b52dc9ce13244f938d5ac808890",
+  "payload_sha256": "ceeabf7044ed82b8b03b530a3e396848057f53e8399d7bdc8203df3b8c4ee80d",
+  "build_report_sha256": "f56fc36114719bc6246a43ec18ab07e3ecd1eebd3d08cf3226b44ea3f8488584",
+  "source_files": [
+    {
+      "file": "Projects/InfiniCore/include/infinicore/memory.hpp",
+      "base_sha256": "c9b60177879ad058b79413a36b6a96d5ca3b97e8d89c389b98725285088559e9",
+      "actual_build_sha256": "e83ea34205f3a2c7db44c4969e5c42f6858173e6273c8399fcc79c9c16826246",
+      "bytes": 1187
+    },
+    {
+      "file": "Projects/InfiniCore/include/infinicore/memory.hpp.h3-streaming-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "c9b60177879ad058b79413a36b6a96d5ca3b97e8d89c389b98725285088559e9",
+      "bytes": 572
+    },
+    {
+      "file": "Projects/InfiniCore/include/infinicore/ops/common/cache.hpp",
+      "base_sha256": "1a21b86959ce422a39978d9b4d0467417fc081def4eea03268d05d399bfa1910",
+      "actual_build_sha256": "577870329424323500be23d74502a988cd2c00b64b1c3d8fc98d1e16cacaa25f",
+      "bytes": 3194
+    },
+    {
+      "file": "Projects/InfiniCore/include/infinicore/ops/common/cache.hpp.h3-cache-teardown-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "1a21b86959ce422a39978d9b4d0467417fc081def4eea03268d05d399bfa1910",
+      "bytes": 2370
+    },
+    {
+      "file": "Projects/InfiniCore/include/infinicore/tensor.hpp",
+      "base_sha256": "d997b55dc7aedc0c654c7c163183ff00414b1e7eb78e7c7ec296c0645061f624",
+      "actual_build_sha256": "d1ed8976260a3491c427f3bae393bd0ab897f35075321add101e937a6a19dab2",
+      "bytes": 10092
+    },
+    {
+      "file": "Projects/InfiniCore/include/infinicore/tensor.hpp.h3-streaming-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "d997b55dc7aedc0c654c7c163183ff00414b1e7eb78e7c7ec296c0645061f624",
+      "bytes": 10351
+    },
+    {
+      "file": "Projects/InfiniCore/src/infinicore/memory.cc",
+      "base_sha256": "ce4d9bb5d0f9856512faabd7acc459be00a87a9df4c5e8224018f47d4186b1ae",
+      "actual_build_sha256": "0fcac536106dce098f3e0006a1ba6109166ac3383594db2b0ff78ac199546f6f",
+      "bytes": 3451
+    },
+    {
+      "file": "Projects/InfiniCore/src/infinicore/memory.cc.h3-streaming-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "ce4d9bb5d0f9856512faabd7acc459be00a87a9df4c5e8224018f47d4186b1ae",
+      "bytes": 661
+    },
+    {
+      "file": "Projects/InfiniCore/src/infinicore/nn/parameter.cc",
+      "base_sha256": "844cc1b345594249f681f347465f75f7c13f9c75242641f1bb3365dd4fcd6a96",
+      "actual_build_sha256": "9cc48637575e3cae192206f0d1493fd4b17233fa8a4792f09d95c0ce17ea2b74",
+      "bytes": 5498
+    },
+    {
+      "file": "Projects/InfiniCore/src/infinicore/nn/parameter.cc.h3-streaming-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "844cc1b345594249f681f347465f75f7c13f9c75242641f1bb3365dd4fcd6a96",
+      "bytes": 4837
+    },
+    {
+      "file": "Projects/InfiniCore/src/infinicore/tensor/copy.cc",
+      "base_sha256": "3e168ba87eb0fcda906d5b6173b40bc8ead3ba4e02483bdc1e9b6dea1db92235",
+      "actual_build_sha256": "79eeac50ef6fa4807e5b9e74fac222718167dc838e0d3e5d850868c7a713af03",
+      "bytes": 3976
+    },
+    {
+      "file": "Projects/InfiniCore/src/infinicore/tensor/copy.cc.h3-streaming-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "3e168ba87eb0fcda906d5b6173b40bc8ead3ba4e02483bdc1e9b6dea1db92235",
+      "bytes": 3553
+    },
+    {
+      "file": "Projects/InfiniCore/xmake/hygon.lua",
+      "base_sha256": "0bfab5c0e8e56ed331ad0ab01140e90c67ab0f8b70b5c49f61e05a9a82c33e82",
+      "actual_build_sha256": "7616b5382cebd58dacd0eb7da5045b93fa94fb8b8a42b44ff20b5ff0576bf715",
+      "bytes": 11632
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/layers/linear/base_linear.cpp",
+      "base_sha256": "f9a00498dd4890ac4403f94fd725de3c1f3830569cef1612063a1efa0be050d5",
+      "actual_build_sha256": "04e0aa52b5501522521b74578fda381faf9fc740d4d77eefcdba78b707ca17bb",
+      "bytes": 5772
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/layers/linear/base_linear.cpp.h3-streaming-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "f9a00498dd4890ac4403f94fd725de3c1f3830569cef1612063a1efa0be050d5",
+      "bytes": 5241
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/layers/linear/h3_streaming_weights.hpp",
+      "base_sha256": null,
+      "actual_build_sha256": "7d716a4744392459a7d52d22543db3f8a6e3650ae17ab78abf72e909dcd37ff1",
+      "bytes": 1713
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/models/minimax_h3/h3_dlpack.h",
+      "base_sha256": null,
+      "actual_build_sha256": "62d0acfd441700f9b970ef2d694bde8628ccd4a36b0b5d311592768350f68d73",
+      "bytes": 23516
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/models/minimax_h3/h3_nine_bindings.hpp",
+      "base_sha256": null,
+      "actual_build_sha256": "09c5fe24930357ff8a54f203a2bfd562c0fab5e0b42f306daeba3608c87f2242",
+      "bytes": 4641
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/models/minimax_h3/h3_nine_bridge.hpp",
+      "base_sha256": null,
+      "actual_build_sha256": "a2ecc80538c9758853aa09c205d82a7fabb7c3a7146681db8ee05cad0f3c078d",
+      "bytes": 3283
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/models/minimax_h3/minimax_h3_transformer.cpp",
+      "base_sha256": "d7dfe3a9c6e8bb7ac2faf3bc47205a8641816cc284de1d6d68d7ab56e5b1a013",
+      "actual_build_sha256": "763f443fca72503e0a8111e5438b62b6f6bdbe5f576ae3e4746d22dfb1614586",
+      "bytes": 29194
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/models/minimax_h3/minimax_h3_transformer.cpp.h3-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "d7dfe3a9c6e8bb7ac2faf3bc47205a8641816cc284de1d6d68d7ab56e5b1a013",
+      "bytes": 29138
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/models/qwen3_5/qwen3_5_vision.cpp",
+      "base_sha256": "c2719b3e895167b4855fe04657cb543aa8411a5d4015efeee58e5d8918ca4aff",
+      "actual_build_sha256": "2fe1ea615b4c6e5e2bfec957d0d995e8768f229cf0c96e5f3c20680e73f3b669",
+      "bytes": 19375
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/models/qwen3_5/qwen3_5_vision.cpp.h3-condition-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "c2719b3e895167b4855fe04657cb543aa8411a5d4015efeee58e5d8918ca4aff",
+      "bytes": 19609
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/pybind11/bindings.cc",
+      "base_sha256": "d006f66a4c1228d3b1c8835d3997533baca8a0081154a40b68a25eebe50d2ee4",
+      "actual_build_sha256": "06b49c650dfdf0a8b91d21f713c4f343b29a7c4355ebe24a47774b014915f30b",
+      "bytes": 699
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/pybind11/bindings.cc.h3-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "d006f66a4c1228d3b1c8835d3997533baca8a0081154a40b68a25eebe50d2ee4",
+      "bytes": 388
+    },
+    {
+      "file": "Projects/InfiniLM/csrc/pybind11/bindings.cc.h3-streaming-reference",
+      "base_sha256": null,
+      "actual_build_sha256": "e201db71ec402930d9744490b5397fb74811a69f887c69d3056271a064bb5bb9",
+      "bytes": 458
+    }
+  ],
+  "compilation_executed": false,
+  "gpu_operations_executed": false
+}

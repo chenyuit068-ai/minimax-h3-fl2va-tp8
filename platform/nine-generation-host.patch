@@ -1,0 +1,19 @@
+--- a/ninetoothed/generation.py
++++ b/ninetoothed/generation.py
+@@ -6,6 +6,7 @@
+ import inspect
+ import itertools
+ import math
++import os
+ import pathlib
+ import subprocess
+ import textwrap
+@@ -590,6 +591,8 @@
+                                 arg="num_stages",
+                                 value=ast.Constant(value=self._num_stages),
+                             ),
++                            *([ast.keyword(arg="enable_fp_fusion", value=ast.Constant(value=False))]
++                              if os.environ.get("NINETOOTHED_DISABLE_FP_FUSION") == "1" else []),
+                         ]
+                         if self._autotune is None
+                         else [],

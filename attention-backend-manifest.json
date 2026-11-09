@@ -1,0 +1,65 @@
+{
+  "status": "CANDIDATE_R2_DEVICE_REQUALIFICATION_AND_FULL_VIDEO_PENDING",
+  "selected_backend": "pv_fused",
+  "selection": "Qualified full-shape paired wall timing, at least 5 percent faster than split",
+  "timing_evidence_sha256": "6c53458a33d77036930ba91a2eec30c4799b14a78e7e027c1725a20fb3c50a40",
+  "full_shape_speedup_over_v4": 1.4194510103397882,
+  "full_shape_speedup_over_split": 1.121881254932948,
+  "per_shape_speedup_over_v4": [
+    {
+      "tokens": 8193,
+      "heads": 56,
+      "speedup": 1.1516690811355075
+    },
+    {
+      "tokens": 40003,
+      "heads": 2,
+      "speedup": 1.416861288577687
+    },
+    {
+      "tokens": 39779,
+      "heads": 56,
+      "speedup": 1.4194510103397882
+    }
+  ],
+  "full_fl2va_tested": false,
+  "official_baseline_compared": false,
+  "old_source_modified": false,
+  "numerical_precision": "FP32 IEEE dot products and same 10-degree software exp2; original model weights",
+  "numerical_backend_counter_note": "matrix is the existing native dispatch slot; selected_backend identifies implementation",
+  "runtime_sources": {
+    "h3_adaln_ninetoothed.py": "ef849b2fcbde4a444fa6c9e1a09a4e9a1083b55c20d3ecfe1a5168460a7dad70",
+    "h3_attention_matrix.py": "05145b9254bb438870c11ed599a8607f5badbd0f3574430e82b897dff6573a92",
+    "h3_attention_matrix_reference_v4.py": "f1057cf4f4f331baa41f7f3c1968e09c3bafe86bca3277a08accb8071ba2dc30",
+    "h3_attention_ninetoothed.py": "08cc2c6cf1b104e25a6329acf0578f08e21b28598c02f56f36d37764f69ac2be",
+    "h3_attention_online_candidate_20261023.py": "7370bfe8dd7bb6e4f1bf50fb5fdf85487dfb36886820c7b1a6d9e36266c1ba12",
+    "h3_attention_pv_fused_candidate_20261023.py": "8ff03e4e6cb19a87eda649bc9da8d3d432dd77fd2f55abf47660708f5d196560",
+    "h3_attention_split_candidate_20261023.py": "9f480fc4666a5c80bdf6603d4292ef112023048de85579843270f12e80026a9e",
+    "h3_attention_staged.py": "a8f2b08d113a9c99c0204b891832e2f5add8b801fdd530bdf581babb32f40397",
+    "h3_attention_twopass.py": "20eb2dd25efd96c1a51c7fd5b21fc3ce1ed8cc0d4235ccebde10abb71c5ca8ff",
+    "h3_block_softmax_candidate_20261023.py": "0a462548f09de8c07c0dfa1f84ae8e2f1b07a1b9f07b97398a0d39f69b70cb4c",
+    "h3_mapped_loader.py": "6ab47ca14d6424457b5e06e6b935035161315ed9182d974e4cede20606847cde",
+    "h3_nine_runtime.py": "8a252d0af13f4360c5f297d63bbeffdb983eee26f47b192c8b62e808b7f16358",
+    "h3_phase_pipeline.py": "86aa074c28e43dddf2858435a1391f77758afa5a933ece7a9e392fec8d95cf3b",
+    "h3_platform_qualification.py": "5779cf8d7cada3179c6ac0076d69778cabf897d2bf7caf1bce25a4b1ec921347",
+    "h3_prepared_launch.py": "20f74e6932a51d67d17201f8c9ded4c350a5c847ead6fc855c12f20a4f1dd83b",
+    "h3_process_supervisor.py": "d63031ebd2211d1c678ae0e56cbdd45ab54f90f9ca033bfe47db012f1ff25930",
+    "h3_pv_fused_ninetoothed_20261023.py": "a914bbfa6db5825c086d9d561962eb91feb2797f8049f083a962c7632f500183",
+    "h3_residual_ninetoothed.py": "b1567e28536c3ff118e76f7be7fe67d21b88b6c197bec128479fc787f9ba1e93",
+    "h3_source_audit.py": "de25057614c93b65b62a9a05de9040216b9225db8a8b2545728ef0a9ffd920f0",
+    "h3_weight_store.py": "f2c56de968a1357b450565b0eb60c673dddcfa428b9ad66be5c6f62f3103077e",
+    "h3_vae_attention.py": "b643d3aad90eb70c70a06f0890918ee85ec88b1b299c210afa4ecf2a216f17bd",
+    "h3_eightcard_evidence.py": "187837c46bb87f2e1a10bcb33c573eb570b5723d5264b3affb59b81682ac9eb2",
+    "h3_framework_streams.py": "bc67293b17faf09094dcdc19f524ace0d4803e3287c9dc991822d1c8e1c6bca5"
+  },
+  "historical_timing_device": "gfx906 Z200SM_80; timing figures are not claims about gfx936",
+  "platform_port": {
+    "base": "submitted v5",
+    "numerical_algorithm_changes": true,
+    "qualification_completed": false,
+    "multi_device_host_dispatch_changes": true
+  },
+  "manifest_sync_note": "R2 follows controlled stream-order diagnostic and original PyTorch AdaLN materialization; historical performance is not a measurement of this revision.",
+  "framework_handoff": "explicit Torch producer completion before native external pointer conversion",
+  "adaln_operation_order": "round(1+scale), round(x*adjusted_scale), round(product+shift), matching original PyTorch"
+}

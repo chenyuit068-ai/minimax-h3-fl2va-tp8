@@ -1,0 +1,9 @@
+{
+  "purpose": "Host descriptor lifetime fix; no numerical operators changed",
+  "before_sha256": "1a21b86959ce422a39978d9b4d0467417fc081def4eea03268d05d399bfa1910",
+  "after_sha256": "577870329424323500be23d74502a988cd2c00b64b1c3d8fc98d1e16cacaa25f",
+  "patch_sha256": "806e17ad396e5583f82e343f19c1755d435230a189b4d223af8e4856aabd7e30",
+  "diagnostic_job": "964595",
+  "qualification_status": "PENDING_REBUILD_AND_REAL_DCU_TESTS",
+  "normalized_before_sha256": "1a8ee58491fda53dbffa3547869cefa895e6cd99f38f9cac69b0d5d68faa5050"
+}

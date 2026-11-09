@@ -1,0 +1,105 @@
+{
+  "purpose": "Exact source used for isolated target experiments; v4-runtime is this projects prior reference, not the official baseline",
+  "files": [
+    {
+      "file": "benchmark_attention_candidates_20261023.py",
+      "sha256": "8b65ccddefa032457bf6ad9706bd21b2ad30edcf50e9fe75850223a2faae09a1"
+    },
+    {
+      "file": "benchmark_pv_fused_attention_20261023.py",
+      "sha256": "f01239a4d4620fd9b62fd2d00e42dcb02b34f47a83ae74f41b54248a0fa9e94c"
+    },
+    {
+      "file": "benchmark_stage_tuned_attention_20261023.py",
+      "sha256": "ce7a69fc08ecb447feaca3c91a288e1f1a4acd7acdac57b347855c2eed28c359"
+    },
+    {
+      "file": "h3_attention_online_candidate_20261023.py",
+      "sha256": "7370bfe8dd7bb6e4f1bf50fb5fdf85487dfb36886820c7b1a6d9e36266c1ba12"
+    },
+    {
+      "file": "h3_attention_online_tiled_20261023.py",
+      "sha256": "98e6b5ce9863027ec35929ee5ef3c49d97984cb5017a7532703a221d02941907"
+    },
+    {
+      "file": "h3_attention_pv_fused_candidate_20261023.py",
+      "sha256": "8ff03e4e6cb19a87eda649bc9da8d3d432dd77fd2f55abf47660708f5d196560"
+    },
+    {
+      "file": "h3_attention_split_candidate_20261023.py",
+      "sha256": "9f480fc4666a5c80bdf6603d4292ef112023048de85579843270f12e80026a9e"
+    },
+    {
+      "file": "h3_attention_split_stage_tuned_20261023.py",
+      "sha256": "988554114f875e10c5df7cedaa31bf22b0cccaaab1ba89db7c07a46254df5824"
+    },
+    {
+      "file": "h3_block_softmax_candidate_20261023.py",
+      "sha256": "0a462548f09de8c07c0dfa1f84ae8e2f1b07a1b9f07b97398a0d39f69b70cb4c"
+    },
+    {
+      "file": "h3_pv_fused_ninetoothed_20261023.py",
+      "sha256": "a914bbfa6db5825c086d9d561962eb91feb2797f8049f083a962c7632f500183"
+    },
+    {
+      "file": "profile_mm_compiler_target_20261023.py",
+      "sha256": "1157bdff193f5c29c447c337c38ec52d39199c5bae2ef2afeb90776a99f76c53"
+    },
+    {
+      "file": "profile_mm_fine_target_20261023.py",
+      "sha256": "abd174597e0008cbb3ad5840872cbc2f0ef43d08bc54b7ef4084e1dcd25487c5"
+    },
+    {
+      "file": "profile_mm_target_20261023.py",
+      "sha256": "ea1cb3db2ed2d0aba1eaa36d63cb1571f0ad7b660210365bf719085dded8db85"
+    },
+    {
+      "file": "profile_online_small_key_20261023.py",
+      "sha256": "39f241cece4a1c147cec58fd5961873a69ebc18fb35f99b55284f6603fd5f294"
+    },
+    {
+      "file": "profile_online_tiles_20261023.py",
+      "sha256": "0d983943a8adf811cbf715061f269c3f500bf3670d6d6e174dcc9a152614ebce"
+    },
+    {
+      "file": "profile_online_warps_20261023.py",
+      "sha256": "75f3d83023388fbd9a8a2fa561e81a3799381ef61bb1426bc18aa500b5eef9ee"
+    },
+    {
+      "file": "test_block_softmax_target_20261023.py",
+      "sha256": "ef0fa8fce17a59da5b235fb8bca7e6da9111bd2620b9bc75cffb222121323460"
+    },
+    {
+      "file": "test_online_attention_target_20261023.py",
+      "sha256": "29fce798299a2af5d315cd72a19be5c20bb910978d9d096568614067ef21eccc"
+    },
+    {
+      "file": "test_pv_fused_attention_20261023.py",
+      "sha256": "60599f33e12aec107cc8a2a291420075b7dfe232038ed60f1144cb88f2c0104c"
+    },
+    {
+      "file": "test_pv_fused_unit_20261023.py",
+      "sha256": "a0c553ce00fb6e8da75f86c5313642d6376c28a86105b3ca3ff6aec11d30647e"
+    },
+    {
+      "file": "test_split_attention_target_20261023.py",
+      "sha256": "df66687b5e04cdd3bc708a18346ec7d0697e6aff09e0b6d2cf360643a36ca579"
+    },
+    {
+      "file": "test_stage_tuned_attention_20261023.py",
+      "sha256": "4ca2334c45172247edc4d9915b06fe52700e95ee466a00d13fdcd24f8a6ba22f"
+    },
+    {
+      "file": "v4-runtime/h3_attention_matrix.py",
+      "sha256": "f1057cf4f4f331baa41f7f3c1968e09c3bafe86bca3277a08accb8071ba2dc30"
+    },
+    {
+      "file": "v4-runtime/h3_attention_staged.py",
+      "sha256": "a8f2b08d113a9c99c0204b891832e2f5add8b801fdd530bdf581babb32f40397"
+    },
+    {
+      "file": "v4-runtime/h3_prepared_launch.py",
+      "sha256": "20f74e6932a51d67d17201f8c9ded4c350a5c847ead6fc855c12f20a4f1dd83b"
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+--- a/InfiniCore/include/infinicore/memory.hpp
++++ b/InfiniCore/include/infinicore/memory.hpp
+@@ -4,6 +4,9 @@
+ 
+ #include <cstddef>
+ #include <functional>
++#include <memory>
++#include <mutex>
++#include <vector>
+ 
+ namespace infinicore {
+ 
+@@ -19,12 +22,29 @@
+     size_t size() const;
+     bool is_pinned() const;
+ 
++    void mark_placeholder();
++    bool is_placeholder() const;
++    void enable_streaming();
++    bool is_streaming() const;
++    void add_stream_source(size_t target_offset, std::shared_ptr<Memory> source, size_t source_offset, size_t count);
++    void materialize();
++    void evict();
++    std::mutex &residency_mutex();
++
++
+ private:
+     std::byte *data_;
+     size_t size_;
+     Device device_;
+     Deleter deleter_;
+     bool is_pinned_;
++
++    struct StreamSpan { size_t target_offset, source_offset, count; std::shared_ptr<Memory> source; };
++    bool placeholder_ = false, streaming_ = false;
++    std::shared_ptr<Memory> resident_;
++    std::vector<StreamSpan> stream_sources_;
++    std::mutex residency_mutex_;
++
+ };
+ 
+ } // namespace infinicore
+--- a/InfiniCore/src/infinicore/memory.cc
++++ b/InfiniCore/src/infinicore/memory.cc
+@@ -1,4 +1,7 @@
+ #include "infinicore/memory.hpp"
++#include "infinicore/context/context.hpp"
++#include <algorithm>
++#include <stdexcept>
+ 
+ namespace infinicore {
+ 
+@@ -16,6 +19,8 @@
+ }
+ 
+ std::byte *Memory::data() {
++    if (resident_) return resident_->data();
++    if (placeholder_) throw std::runtime_error("Deferred weight accessed before materialization");
+     return data_;
+ }
+ 
+@@ -30,4 +35,57 @@
+ bool Memory::is_pinned() const {
+     return is_pinned_;
+ }
++
++void Memory::mark_placeholder() {
++    if (data_ || deleter_) throw std::runtime_error("Placeholder storage must not own a raw allocation");
++    placeholder_=true;
++}
++bool Memory::is_placeholder() const { return placeholder_; }
++void Memory::enable_streaming() {
++    if (!placeholder_ || resident_) throw std::runtime_error("Enable streaming before weight loading");
++    streaming_=true;
++}
++bool Memory::is_streaming() const { return streaming_; }
++std::mutex &Memory::residency_mutex() { return residency_mutex_; }
++void Memory::add_stream_source(size_t target, std::shared_ptr<Memory> source, size_t offset, size_t count) {
++    std::unique_lock lock(residency_mutex_,std::try_to_lock);
++    if (!lock.owns_lock() || resident_) throw std::runtime_error("Cannot reload active streaming weights");
++    if (!streaming_ || source.get()==this || source->device().getType()!=Device::Type::CPU ||
++        target>size_ || count>size_-target || offset>source->size() || count>source->size()-offset)
++        throw std::runtime_error("Invalid streaming weight span");
++    for (auto &span : stream_sources_) {
++        if (target==span.target_offset && count==span.count) { span={target,offset,count,std::move(source)}; return; }
++        if (target<span.target_offset+span.count && span.target_offset<target+count)
++            throw std::runtime_error("Overlapping streaming weight spans");
++    }
++    stream_sources_.push_back({target,offset,count,std::move(source)});
++}
++void Memory::materialize() {
++    if (!placeholder_ || resident_) return;
++    if (streaming_) {
++        std::sort(stream_sources_.begin(),stream_sources_.end(),[](const auto &a,const auto &b){return a.target_offset<b.target_offset;});
++        size_t covered=0;
++        for (const auto &span : stream_sources_) {
++            if (span.target_offset!=covered) throw std::runtime_error("Missing streaming weight bytes");
++            covered+=span.count;
++        }
++        if (covered!=size_) throw std::runtime_error("Incomplete streaming weight coverage");
++    }
++    context::setDevice(device_);
++    auto allocation=context::allocateMemory(size_);
++    try {
++        for (const auto &span : stream_sources_)
++            context::memcpyH2D(allocation->data()+span.target_offset,span.source->data()+span.source_offset,span.count);
++        if (streaming_) context::syncStream();
++    } catch (...) {
++        try { context::syncStream(); } catch (...) {}
++        throw;
++    }
++    resident_=std::move(allocation);
++}
++void Memory::evict() {
++    if (!streaming_) throw std::runtime_error("Only streaming storage can be evicted");
++    resident_.reset();
++}
++
+ } // namespace infinicore
+--- a/InfiniCore/include/infinicore/tensor.hpp
++++ b/InfiniCore/include/infinicore/tensor.hpp
+@@ -140,6 +140,8 @@
+ 
+     Device device() const;
+ 
++    const std::shared_ptr<Memory> &storage() const { return data_.memory; }
++
+     infiniopTensorDescriptor_t desc() const;
+ 
+     bool is_pinned() const;
+--- a/InfiniCore/src/infinicore/nn/parameter.cc
++++ b/InfiniCore/src/infinicore/nn/parameter.cc
+@@ -3,9 +3,22 @@
+ #include "infinicore/context/context.hpp"
+ 
+ #include <cstring>
++#include <cstdlib>
+ #include <stdexcept>
+ 
+ namespace infinicore::nn {
++namespace {
++Tensor parameter_storage(const Shape &shape,const DataType &dtype,const Device &device) {
++    const char *enabled=std::getenv("INFINICORE_DEFER_PARAMETER_STORAGE");
++    if (enabled && std::strcmp(enabled,"1")==0 && device.getType()!=Device::Type::CPU) {
++        auto result=Tensor::from_blob(nullptr,shape,dtype,device);
++        result->storage()->mark_placeholder();
++        return result;
++    }
++    return Tensor::empty(shape,dtype,device,false);
++}
++} // namespace
++
+ Parameter::Parameter()
+     : Tensor() {
+ }
+@@ -39,7 +52,7 @@
+     Size tp_rank,
+     Size tp_size,
+     Size num_shards)
+-    : Parameter(Tensor::empty(get_partition_shape_(shape, tp_dim, tp_size, num_shards), dtype, device, false), tp_dim, tp_rank, tp_size, num_shards) {
++    : Parameter(parameter_storage(get_partition_shape_(shape, tp_dim, tp_size, num_shards), dtype, device), tp_dim, tp_rank, tp_size, num_shards) {
+ }
+ 
+ Parameter::Parameter(const Parameter &other)
+@@ -51,7 +64,10 @@
+ 
+ void Parameter::load_blob(const void *data) {
+     Shape expected_shape = Shape(impl_->shape());
+-    expected_shape[tp_dim_] *= tp_size_;
++    if (tp_size_>1) {
++        if (tp_dim_>=expected_shape.size()) throw std::runtime_error("Invalid parallel partition dimension");
++        expected_shape[tp_dim_] *= tp_size_;
++    }
+     auto buffer = Tensor::empty(expected_shape, impl_->dtype(), Device(Device::Type::CPU, 0), true);
+     std::memcpy(buffer->data(), data, buffer->nbytes());
+     this->load(buffer);
+@@ -70,7 +86,10 @@
+     Shape expected_shape = Shape(impl_->shape());
+ 
+     if (num_shards_ == 0 || num_shards_ >= tp_size_) {
++        if (tp_size_>1) {
++        if (tp_dim_>=expected_shape.size()) throw std::runtime_error("Invalid parallel partition dimension");
+         expected_shape[tp_dim_] *= tp_size_;
++    }
+ 
+         Tensor source_tensor = tensor;
+         if (expected_shape != tensor->shape()) {
+--- a/InfiniCore/src/infinicore/tensor/copy.cc
++++ b/InfiniCore/src/infinicore/tensor/copy.cc
+@@ -22,6 +22,14 @@
+         throw std::runtime_error(
+             "Cannot copy from tensor with different shape. Src: " + src->info() + " Dst: " + this->info());
+     }
++    if (data_.memory->is_streaming()) {
++        if (src->device().getType()!=Device::Type::CPU || !is_contiguous() || src->dtype()!=dtype())
++            throw std::runtime_error("Streaming weight loads require contiguous CPU source and matching dtype");
++        if (!src->is_contiguous()) src=src->contiguous();
++        data_.memory->add_stream_source(data_.offset,src->data_.memory,src->data_.offset,nbytes());
++        return;
++    }
++    if (data_.memory->is_placeholder()) data_.memory->materialize();
+     if (this->device() == src->device()) {
+         context::setDevice(this->device());
+         op::rearrange_(Tensor(const_cast<TensorImpl *>(this)->shared_from_this()), src);
+--- a/InfiniLM/csrc/layers/linear/base_linear.cpp
++++ b/InfiniLM/csrc/layers/linear/base_linear.cpp
+@@ -1,4 +1,5 @@
+ #include "base_linear.hpp"
++#include "h3_streaming_weights.hpp"
+ #include "infinicore/ops.hpp"
+ #include <spdlog/spdlog.h>
+ 
+@@ -28,11 +29,17 @@
+             desc.shape, desc.dtype, device,
+             desc.split_dim, desc.tp_rank, desc.tp_size,
+             desc.tp_num_heads >= 0 ? desc.tp_num_heads : 0);
++        if (param->storage()->is_placeholder()) {
++            if (desc.tp_size!=1 || !std::dynamic_pointer_cast<infinilm::quantization::NoneQuantization>(quantization_))
++                throw std::runtime_error("Streaming supports single-device unquantized linear weights only");
++            param->storage()->enable_streaming();
++        }
+         this->register_parameter(desc.name, param);
+     }
+ }
+ 
+ infinicore::Tensor BaseLinear::compute_linear(infinicore::Tensor &input) const {
++    infinilm::h3_streaming::LinearLease lease(parameters_);
+     // Build params map from direct parameters only (not state_dict which uses a
+     // static local and is not thread-safe across RankWorker threads).
+     infinilm::quantization::ParamsMap params;
+@@ -40,18 +47,23 @@
+         params[name] = static_cast<const infinicore::Tensor &>(param);
+     }
+ 
+-    return quantization_->forward(params, input, has_bias_, alpha_);
++    auto result=quantization_->forward(params, input, has_bias_, alpha_);
++    lease.finish();
++    return result;
+ }
+ 
+ infinicore::Tensor BaseLinear::compute_linear_allreduce(
+     infinicore::Tensor &input,
+     infinicclComm_t communicator) const {
++    infinilm::h3_streaming::LinearLease lease(parameters_);
+     infinilm::quantization::ParamsMap params;
+     for (const auto &[name, param] : parameters_) {
+         params[name] = static_cast<const infinicore::Tensor &>(param);
+     }
+-    return quantization_->forward_allreduce(
++    auto result=quantization_->forward_allreduce(
+         params, input, has_bias_, communicator, alpha_);
++    lease.finish();
++    return result;
+ }
+ 
+ infinicore::Tensor BaseLinear::forward(infinicore::Tensor &input) const {
+@@ -65,6 +77,9 @@
+ }
+ 
+ void BaseLinear::process_weights_after_loading() {
++    for (const auto &[name,param] : parameters_) {
++        if (param->storage()->is_streaming()) return;
++    }
+     infinilm::quantization::ParamsMap params;
+     for (const auto &[name, param] : parameters_) {
+         params[name] = static_cast<const infinicore::Tensor &>(param);
+--- a/InfiniLM/csrc/pybind11/bindings.cc
++++ b/InfiniLM/csrc/pybind11/bindings.cc
+@@ -14,4 +14,10 @@
+     infinilm::engine::distributed::bind_dist_config(m);
+     infinilm::engine::bind_infer_engine(m);
+     infinilm::h3_nine::bind(m);
++    m.def("_h3_streaming_storage_available", [] { return true; });
++    m.def("_h3_trim_memory", [] {
++        pybind11::gil_scoped_release release;
++        infinicore::context::syncDevice();
++        infinicore::context::trimMemory();
++    });
+ }

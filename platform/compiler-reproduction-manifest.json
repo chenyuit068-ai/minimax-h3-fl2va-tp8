@@ -1,0 +1,44 @@
+{
+  "torch": "2.9.0+das.opt1.dtk2604",
+  "triton": "3.3.0+das.opt1.dtk2604.torch290",
+  "ninetoothed": "0.26.0",
+  "triton_wheel_sha256": "183e2e4a557b23ec5e827417c6cc34ae65a0604e1f8f43ce478eeda58b44e741",
+  "torch_wheel_sha256": "2073e439137e8007d632a22d3b51873336c24dff20e1a7a0f75551a66f0ceb87",
+  "ninetoothed_wheel_sha256": "7f15a35b308f00659c63508ff14f964f431234397e5dc97f73e2e4008ab51f08",
+  "qualified_compiler_sources": {
+    "triton_hip_driver": "b4924661eb332037a25bca8e6fe3a7e51f6a36ff86cd9e29e96cc5487e2c1eb8",
+    "triton_hip_abi": "696a9542e3d437f91c27e9cd21d77209ef0ab6186df08701a1eb4513bb7c3450",
+    "nine_generation": "a907eeb6c1ba34107014a59cf61164fe8a41d4114ae12690a531254508dd2b36",
+    "triton_runtime_cache": "c76ffd3bd887759ce14b7076d36dfd7fd1e0befa6ef5bd8a810984ba25d2dabe"
+  },
+  "patches": {
+    "host-header-search.patch": "de68834926b092c6fe2980f3adede20ce7f58688da588fd8dfa1d5b433fdb2f4",
+    "host-properties-abi.patch": "47bcc76826d957e4f0901eded90d7e386b9eb2c5bc295b3a5b95670f4dcdfcc0",
+    "InfiniCore-op-cache-teardown.patch": "806e17ad396e5583f82e343f19c1755d435230a189b4d223af8e4856aabd7e30",
+    "nine-generation-host.patch": "e0a56309f6525e1e715b6e6872d1eaaba64e7967e499860e6691969b80f6ba9b",
+    "host-cache-publication.patch": "6119c332687b1ed8427c1f3c8a60b05b792ac294789b4816fa815e90409a6cd0",
+    "hip-scalar-device-properties.patch": "3c36b354ea1f6c3b31a85b44cfe24305c32fc3266b12cecd115d602e8c99e42d"
+  },
+  "host_abi_patch_does_not_add_device_kernels": true,
+  "nine_generation_before_sha256": "8863013c70fb5bdc131f1078c7b1e0ddbfdd68336a625dfb2811c781e345fe3d",
+  "triton_runtime_cache_before_sha256": "56cf65e0379184a5f207e85f0c1ae9e6ff3938eeaf9245d31d356367bceed318",
+  "host_cache_publication_patch_validation": "CPU_ATOMIC_PUBLICATION_TESTS_AND_EIGHT_CARD_COMPONENTS_PASS_R10",
+  "hip_scalar_properties_before": {
+    "driver.py": "a91681dba3ddc68fb40ccbc2d363f13c599470f81b1650647bc10d1463564654",
+    "driver.c": "6f0f33b6b467e8c75aeb91c2415fdb857ea1480f8a3eefda771cb96d85536a11"
+  },
+  "required_eight_card_host_options": {
+    "TRITON_HIP_PROPERTIES_V2": "1",
+    "TRITON_HIP_SCALAR_PROPERTIES": "1",
+    "TRITON_HIP_INCLUDE_PATH": "matching DTK include directory",
+    "TRITON_FORCE_HIP_ARCH": "architecture verified from every allocated device",
+    "NINETOOTHED_DISABLE_FP_FUSION": "1",
+    "PYTORCH_NVML_BASED_CUDA_CHECK": "1; actual eight-device transfer and synchronization still required before generation"
+  },
+  "eight_card_component_qualification": {
+    "job": "c602bc31fbeb",
+    "status": "EIGHT_CARD_COMPONENTS_PASS_FULL_VIDEO_PENDING",
+    "report_sha256": "0965ccb79c5cdfa5f50253171c6f4854f94fbd0626c0af61a7076eee97ef53d3"
+  },
+  "torch_installation_policy": "Use the preinstalled official environment 524820f26b72; do not replace Torch"
+}
