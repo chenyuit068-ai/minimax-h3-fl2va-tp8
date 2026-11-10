@@ -2,7 +2,7 @@
   "schema_version": 1,
   "candidate": "R2",
   "status": "REVIEW_READY_NOT_PUBLISHED_NOT_SUBMITTED",
-  "created_utc": "2026-11-09T16:36:01.555554+00:00",
+  "created_utc": "2026-11-10T04:55:00+08:00",
   "inference_sources": {
     "assets/original-model-files.json": "4b8c2a9a9cc0a7291b080cf67a6836712f4c3482e43745a3ceb83f014f236786",
     "native/conditioner-patch-manifest.json": "b7a875410d2c20b00a81a89b68c13a9fb63e4780893e4d4e255dbad2475b3db5",
@@ -64,8 +64,8 @@
       "sha256": "06a169e02a6a0c874f7129319e6f84f00b3c7e8a48767ab6b9943559075cca6d"
     },
     "BUILD-ACTUAL-SOURCES.md": {
-      "bytes": 5226,
-      "sha256": "493084b2cc67b30cc8abe2ad764f328cdc112f045d5ea834f47574edb81572ca"
+      "bytes": 5712,
+      "sha256": "84c2f6d9b3aa63a9eaf6488571b7e7be4c45368fbe8a26c6e05b745e5d30ea8b"
     },
     "DEPENDENCIES.md": {
       "bytes": 1838,
@@ -98,6 +98,14 @@
     "evidence/r3-run-2-comparator-result.txt": {
       "bytes": 202,
       "sha256": "b0e0f29b7c5c481c850a1d8cc12b0081ccfd944f121546a8a0e0a092773548c2"
+    },
+    "evidence/r4-comparator-result.txt": {
+      "bytes": 202,
+      "sha256": "63f2b6f7935628d85bd5dc1336d721afaeb633a38e656ad1248c734d89ed1b5b"
+    },
+    "evidence/r4-full-video-experiment-summary.json": {
+      "bytes": 7019,
+      "sha256": "550ab6c341d758f3900ce571a05fc2cfa8954b9076465f1f423fcc7736058b8f"
     },
     "evidence/unmodified-comparator-result.txt": {
       "bytes": 196,
@@ -228,8 +236,8 @@
       "sha256": "b947666281222f79e082283b6f84e68880c499305890f6ab8b03b8bac82456dc"
     },
     "README.md": {
-      "bytes": 3542,
-      "sha256": "efe4fe6d468800662e964133ad845416c66a62f857c1a9b2e0d8a9f93ae664be"
+      "bytes": 4096,
+      "sha256": "34737e7ebbba0e208216a4152d8bbf2018816f6d4c3c857d26555778c88dbddc"
     },
     "reproduction/InfiniCore-actual-build.patch": {
       "bytes": 99583,
@@ -472,8 +480,8 @@
       "sha256": "74c2847144698025c9ac6edfa81a1e238c5850640e60203a14fd7fb59ec04537"
     },
     "scripts/rebuild_actual_native.py": {
-      "bytes": 12121,
-      "sha256": "139bb2f87d0b4d31cfcc1b9b1ad42cb45bb7b0db087e358c173e9055fda48392"
+      "bytes": 13902,
+      "sha256": "8c05b5de7a27fc89ef95a41013f19da81239ee9329a2dc4d8f21b171ac04d328"
     },
     "scripts/run_checks.sh": {
       "bytes": 1564,
@@ -590,6 +598,26 @@
     "tests/experiments/r3-runtime/h3_nine_runtime.py": {
       "bytes": 11077,
       "sha256": "92c47b9cab7587420a3a42bbc394095c605a3f111663df2ab9e94a740e042dba"
+    },
+    "tests/experiments/r4-selective/attention-backend-manifest.json": {
+      "bytes": 4424,
+      "sha256": "7c9197d418caae4eb252cf5ec4be4008c4675298ead83be08328d0525ccf7434"
+    },
+    "tests/experiments/r4-selective/h3_attention_matrix.py": {
+      "bytes": 1513,
+      "sha256": "a46c9e0cea097a13574a7c4106dd45fb16e1ee412ecac2a32b8231482db8b237"
+    },
+    "tests/experiments/r4-selective/inference-source-identity.json": {
+      "bytes": 4182,
+      "sha256": "84a2b6eacee7cfe7f6b04f3d7a2baad1bd72d410ad9ae0ae507bee676a09cfa3"
+    },
+    "tests/experiments/r4-selective/prepare_experiment.py": {
+      "bytes": 1822,
+      "sha256": "9d1d89364a5c1d572a53f2f22f96a05be4c8962813e6bbc3ca793ba229336d3e"
+    },
+    "tests/experiments/r4-selective/README.md": {
+      "bytes": 1001,
+      "sha256": "97125181070b8aacc9a688d1d340bdc4be0c4d0081043d53c3813a74a0b29b9e"
     },
     "tests/experiments/run_qualified_tests.sh": {
       "bytes": 3065,
