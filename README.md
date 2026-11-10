@@ -8,6 +8,9 @@
 
 本次原生入口端到端 874.538 秒，原版参考 600.491 秒，当前尚无相对原版的端到端加速。计时口径与各阶段耗时见 `evidence/r2-public-result-summary.json`；读取现有视频的比较脚本计时不能作为生成耗时。
 
+完整输出示例位于 `examples/r2-generated.mp4`，数据核对索引见
+`evidence/REPORT_CLAIMS.md`。示例不参与正式推理，入口按输入重新生成。
+
 ## 实现和使用
 
 - 入口：`run_eightcard.py fl2va`；完整操作见 `RUN-EIGHT-CARD.md`。

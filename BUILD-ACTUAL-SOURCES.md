@@ -25,7 +25,7 @@ export H3_BUILD_ROOT=/absolute/path/to/new-native-build
 
 # 从新的目录编译安装。若不指定--xmake，会从随包的3.0.5源码构建xmake。
 "$H3_PYTHON" "$H3_PACKAGE_ROOT/scripts/rebuild_actual_native.py" \
-  --build-root "$H3_BUILD_ROOT" --dtk-root "$DTK_ROOT" --jobs 1
+  --build-root "$H3_BUILD_ROOT" --dtk-root "$DTK_ROOT" --jobs 16
 
 export H3_CORE_ROOT="$H3_BUILD_ROOT/native/source/Projects/InfiniCore"
 export H3_LM_ROOT="$H3_BUILD_ROOT/native/source/Projects/InfiniLM"
@@ -36,7 +36,7 @@ export LD_LIBRARY_PATH="$INFINI_ROOT/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 构建器按厂商Torch实际C++ ABI配置全部桥接单元，按顺序构建/安装infinirt、infiniop、infiniccl、infinicore_cpp_api、_infinicore和_infinilm。失败保留日志并停止，不自动重试，不修改受保护的原版入口或比较脚本。实际源码已包含宿主桥接与缓存生命周期改动，不重复应用旧的中间补丁。
 
-平台文件系统可能拒绝 `cp -p` 恢复权限元数据，因此 xmake 采用内容复制并在创建二进制时设置可执行权限。该方法已在 CPU 工作区验证，1,894 个文件复制完成且 xmake 3.0.5 版本检查通过。四路编译曾触发对象目录创建竞态 `File exists`，此处默认使用单路编译。上述宿主构建修复不改变 R2 推理源码或既有完整视频；整套库的新构建和设备复测仍须以实际完成凭据为准。
+平台文件系统可能拒绝 `cp -p` 恢复权限元数据，因此 xmake 采用内容复制并在创建二进制时设置可执行权限。1,894 个工具文件复制及 xmake 3.0.5 检查已通过。构建器先串行建立各目标的对象和依赖目录，再并行编译，避免曾出现的 `File exists` 竞态。2026年11月10日从固定源码和实际改动开始的独立构建已通过六个目标的编译、安装，使用16路编译；新产物设备资格与完整视频以对应的新运行凭据为准。CPU登录工作区的短时限不能代替足够长的编译作业时限。上述宿主修复不改变R2的38份推理源码。
 
 ## 运行
 
@@ -47,6 +47,9 @@ export H3_VENDOR_COMPILER=/absolute/path/to/patched-vendor-compiler
 export H3_MODEL_VIEW=/absolute/path/to/new-verified-model-view
 export H3_FIRST_FRAME=/absolute/path/to/official-uniform-first-frame.png
 export H3_RUN_DIR=/absolute/path/to/new-generation-evidence
+# 推荐将原始Transformer/Diffusers wheel展开到本次本地临时目录，减少AFS导入等待。
+# 此目录须含上述精确版本及哈希的两个原始wheel。
+export H3_MODEL_WHEELHOUSE=/absolute/path/to/verified-offline-wheelhouse
 "$H3_PYTHON" "$H3_PACKAGE_ROOT/scripts/prepare_model_view.py" \
   --model-path /public/read-only/MiniMax-H3 --output "$H3_MODEL_VIEW"
 

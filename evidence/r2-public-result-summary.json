@@ -138,5 +138,12 @@
     "streaming/patch-manifest.json": "541bd1eee5c3c0d67c290d9bfe2764544aec0d6b9aeca72808206297c66f5db4"
   },
   "official_similarity_validated": false,
-  "performance_gain_over_original_not_demonstrated": true
+  "performance_gain_over_original_not_demonstrated": true,
+  "runtime_workspace_counter": {
+    "peak_bytes_all_eight_devices": 4267868160,
+    "per_device_budget_bytes": 1610612736,
+    "evictions": 0,
+    "scope": "Cached native Nine runtime workspace aggregate; excludes model weights, VAE workspace and other tensors; not a whole-system VRAM peak.",
+    "source_audit_sha256": "1ce81c860a1c4fc6aeafff506c44c47c15f07028371abfaafaf91b2a148ac275"
+  }
 }

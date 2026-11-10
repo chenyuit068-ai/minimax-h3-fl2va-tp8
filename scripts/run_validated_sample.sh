@@ -18,11 +18,21 @@ cleanup() {
 }
 trap cleanup EXIT
 export TMPDIR="$scratch" XDG_CACHE_HOME="$scratch/cache" TRITON_CACHE_DIR="$scratch/cache/triton"
+export NINETOOTHED_CACHE_DIR="$scratch/cache/ninetoothed"
 export PYTHONNOUSERSITE=1 PYTHONUNBUFFERED=1 PYTORCH_NVML_BASED_CUDA_CHECK=1
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-2}"
 export NINETOOTHED_DISABLE_FP_FUSION=1 TRITON_HIP_PROPERTIES_V2=1 TRITON_HIP_SCALAR_PROPERTIES=1
 export TRITON_HIP_INCLUDE_PATH="$DTK_ROOT/include"
 export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
-export PYTHONPATH="${H3_VENDOR_COMPILER:+$H3_VENDOR_COMPILER:}$H3_LM_ROOT/python:$H3_CORE_ROOT/python:$package:$package/runtime${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="$H3_LM_ROOT/python:$H3_CORE_ROOT/python:$package:$package/runtime${H3_VENDOR_COMPILER:+:$H3_VENDOR_COMPILER}${PYTHONPATH:+:$PYTHONPATH}"
+if [[ -n "${H3_MODEL_WHEELHOUSE:-}" ]]; then
+    "$H3_PYTHON" "$package/scripts/stage_pinned_model_dependencies.py" \
+        --wheelhouse "$H3_MODEL_WHEELHOUSE" --output-dir "$scratch/model-dependencies"
+    export PYTHONPATH="$scratch/model-dependencies:$PYTHONPATH"
+    cp -- "$scratch/model-dependencies/staged-dependencies.json" "$H3_RUN_DIR/staged-dependencies.json"
+    H3_MODEL_DEPENDENCY_WHEELS_JSON="$("$H3_PYTHON" -c 'import json,sys;print(json.dumps(json.load(open(sys.argv[1]))["wheels"]))' "$H3_RUN_DIR/staged-dependencies.json")"
+    export H3_MODEL_DEPENDENCY_WHEELS_JSON
+fi
 torch_lib="$("$H3_PYTHON" -c 'import pathlib,torch;print(pathlib.Path(torch.__file__).parent/"lib")')"
 export LD_LIBRARY_PATH="$INFINI_ROOT/lib:$torch_lib:$DTK_ROOT/llvm/gcvm/lib:$DTK_ROOT/cuda/cuda/lib64:$DTK_ROOT/lib:$DTK_ROOT/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 "$H3_PYTHON" -c 'import hashlib,sys;assert hashlib.file_digest(open(sys.argv[1],"rb"),"sha256").hexdigest()=="b97c3487ca35da0c803fba3787cf2b7f936d3d4595548ae5b7b576c19934be54","Use the prescribed uniform first frame"' "$H3_FIRST_FRAME"

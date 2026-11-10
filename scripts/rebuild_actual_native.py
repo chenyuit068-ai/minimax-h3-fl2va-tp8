@@ -101,6 +101,23 @@ def install_xmake_without_metadata(source, prefix):
                 files_copied=count, metadata_preserved=False)
 
 
+def prepare_compiler_directories(project, target):
+    """Create source parent directories before parallel compiler workers start."""
+    relative_directories = set()
+    for source_root in ('src', 'csrc', 'python'):
+        directory = project / source_root
+        if not directory.is_dir():
+            continue
+        for path in directory.rglob('*'):
+            if path.is_file() and path.suffix in ('.c', '.cc', '.cpp', '.cxx', '.cu'):
+                relative_directories.add(path.parent.relative_to(project))
+    for kind in ('.objs', '.deps'):
+        output = project / 'build' / kind / target / 'linux/x86_64/release'
+        for relative in sorted(relative_directories):
+            (output / relative).mkdir(parents=True, exist_ok=True)
+    return len(relative_directories) * 2
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--build-root', type=Path, required=True, help='New writable local scratch directory')
@@ -240,8 +257,13 @@ def main():
             '--hygon-dcu=y','--hygon-arch=gfx936','--cuda='+str(dtk/'cuda/cuda'),'--ccl=y','--aten=y'],cwd=core)
         run('configure_lm',[xmake,'f','-y','-cv','--mode=release'],cwd=lm)
         for target in ('infinirt','infiniop','infiniccl','infinicore_cpp_api','_infinicore'):
+            prepared = prepare_compiler_directories(core, target)
+            report.setdefault('prepared_compiler_directories', {})[target] = prepared
+            save()
             run('build_'+target,[xmake,'build','-j'+str(args.jobs),target],cwd=core)
             run('install_'+target,[xmake,'install',target],cwd=core)
+        report['prepared_compiler_directories']['_infinilm'] = prepare_compiler_directories(lm, '_infinilm')
+        save()
         run('build_infinilm',[xmake,'build','-j'+str(args.jobs),'_infinilm'],cwd=lm)
         run('install_infinilm',[xmake,'install','_infinilm'],cwd=lm)
         for library in (sysroot/'usr/lib/x86_64-linux-gnu').glob('libboost*.so*'):

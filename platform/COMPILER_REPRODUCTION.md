@@ -18,8 +18,23 @@ InfiniFabric 的项目存储和个人 AFS 实测会拒绝子目录到父目录�
 
 运行时必须指定配套环境：
 
+若使用隔离的 `H3_VENDOR_COMPILER` 目录，Triton 的三个补丁应全部应用到该目录；
+不要只修改虚拟环境中的另一份 Triton。NineToothed 的补丁则应用到实际安装 Nine
+的 Python `purelib`。下面的命令对应这一布局，所有输入 wheel 的哈希仍需与清单一致：
+
 ```bash
-export PYTHONPATH="/path/to/vendor-compiler-33:$PYTHONPATH"
+export H3_VENDOR_COMPILER=/absolute/path/to/verified-vendor-compiler
+PY="$H3_PYTHON"
+C="$H3_VENDOR_COMPILER"
+"$PY" platform/patch_vendor_triton33_native_abi.py "$C"
+"$PY" platform/apply_hip_scalar_properties_patch.py --site-packages "$C"
+"$PY" platform/apply_triton_cache_publication_patch.py --site-packages "$C"
+SITE=$("$PY" -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')
+"$PY" platform/apply_nine_generation_host_patch.py --site-packages "$SITE"
+```
+
+```bash
+export PYTHONPATH="$H3_VENDOR_COMPILER${PYTHONPATH:+:$PYTHONPATH}"
 export TRITON_HIP_INCLUDE_PATH="$DTK_ROOT/include"
 export TRITON_HIP_PROPERTIES_V2=1
 export TRITON_HIP_SCALAR_PROPERTIES=1
