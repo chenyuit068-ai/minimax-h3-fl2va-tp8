@@ -74,12 +74,40 @@ def deb_data(blob):
     return payload
 
 
+def install_xmake_without_metadata(source, prefix):
+    """Install this build without copying ownership or ACL metadata."""
+    binary = source / 'build/xmake'
+    destination = prefix / 'bin/xmake'
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    # Some competition mounts permit file creation but reject cp -p's later
+    # metadata restoration. Set executable mode at creation instead.
+    descriptor = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o755)
+    with binary.open('rb') as src, os.fdopen(descriptor, 'wb') as dst:
+        shutil.copyfileobj(src, dst)
+    program = prefix / 'share/xmake'
+    program.mkdir(parents=True, exist_ok=False)
+    count = 1
+    for path in sorted((source / 'xmake').rglob('*')):
+        target = program / path.relative_to(source / 'xmake')
+        if path.is_dir():
+            target.mkdir(parents=True, exist_ok=True)
+        elif path.is_file():
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(path, target)
+            count += 1
+    if not os.access(destination, os.X_OK):
+        raise RuntimeError('Fresh xmake is not executable on this filesystem')
+    return dict(binary_sha256=sha(binary), installed_sha256=sha(destination),
+                files_copied=count, metadata_preserved=False)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--build-root', type=Path, required=True, help='New writable local scratch directory')
     parser.add_argument('--dtk-root', type=Path)
     parser.add_argument('--xmake', type=Path, help='Existing xmake 3.0.5; otherwise build the pinned source')
-    parser.add_argument('--jobs', type=int, default=4)
+    parser.add_argument('--jobs', type=int, default=1,
+                        help='Compiler processes; use 1 on mounts with concurrent mkdir races')
     parser.add_argument('--prepare-only', action='store_true', help='Validate and unpack sources and build dependencies only')
     args = parser.parse_args()
     if sys.platform != 'linux':
@@ -181,6 +209,9 @@ def main():
                    CMAKE_PREFIX_PATH=probe['site']+'/pybind11/share/cmake')
         if args.xmake:
             xmake = args.xmake.resolve()
+            program = xmake.parent.parent / 'share/xmake'
+            if program.is_dir():
+                env['XMAKE_PROGRAM_DIR'] = str(program)
         else:
             tool_source = root / 'tool-source'
             tool_source.mkdir()
@@ -189,7 +220,11 @@ def main():
             xmake_source = tool_source/'xmake-3.0.5'
             run('configure_xmake',['bash','./configure','--prefix='+str(tools)],cwd=xmake_source)
             run('compile_xmake',['make','-j'+str(args.jobs)],cwd=xmake_source)
-            run('install_xmake',['make','install'],cwd=xmake_source)
+            started = time.monotonic()
+            installation = install_xmake_without_metadata(xmake_source, tools)
+            report['phases'].append(dict(name='install_xmake_without_metadata',
+                returncode=0, seconds=time.monotonic()-started, **installation))
+            save()
             xmake = tools/'bin/xmake'
             env['XMAKE_PROGRAM_DIR']=str(tools/'share/xmake')
         version = subprocess.run([str(xmake),'--version'],env=env,capture_output=True,text=True,check=True,timeout=30)
