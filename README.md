@@ -11,6 +11,16 @@
 完整输出示例位于 `examples/r2-generated.mp4`，数据核对索引见
 `evidence/REPORT_CLAIMS.md`。示例不参与正式推理，入口按输入重新生成。
 
+## 初赛公开源码
+
+| 组件 | 公开仓库 | 分支 | 完整 commit |
+| --- | --- | --- | --- |
+| InfiniCore | [infinicore-h3-tp8](https://github.com/chenyuit068-ai/infinicore-h3-tp8) | [preliminary-tp8-r2](https://github.com/chenyuit068-ai/infinicore-h3-tp8/tree/preliminary-tp8-r2) | [`c081dd8dd9f6fa0d850d0ea53ef40f3b3d45d621`](https://github.com/chenyuit068-ai/infinicore-h3-tp8/commit/c081dd8dd9f6fa0d850d0ea53ef40f3b3d45d621) |
+| InfiniLM | [infinilm-h3-tp8](https://github.com/chenyuit068-ai/infinilm-h3-tp8) | [preliminary-tp8-r2](https://github.com/chenyuit068-ai/infinilm-h3-tp8/tree/preliminary-tp8-r2) | [`b8c3f19c91f655d42d0108eb5951edecf238c08c`](https://github.com/chenyuit068-ai/infinilm-h3-tp8/commit/b8c3f19c91f655d42d0108eb5951edecf238c08c) |
+| ninetoothed | [ninetoothed-h3-tp8](https://github.com/chenyuit068-ai/ninetoothed-h3-tp8) | [preliminary-tp8-r2](https://github.com/chenyuit068-ai/ninetoothed-h3-tp8/tree/preliminary-tp8-r2) | [`23822137cfe752fa49a761d033b58eb16f5d2ccc`](https://github.com/chenyuit068-ai/ninetoothed-h3-tp8/commit/23822137cfe752fa49a761d033b58eb16f5d2ccc) |
+
+本集成仓库提供八卡运行入口、九齿算子表达、构建说明和实验记录。厂商 HCU Triton 适配补丁及原始 wheel 哈希见 [platform](platform)。`ntops` 沿用原始依赖，版本见 [依赖清单](prerequisites/source-manifest.json)。
+
 ## 实现和使用
 
 - 入口：`run_eightcard.py fl2va`；完整操作见 `RUN-EIGHT-CARD.md`。
@@ -21,7 +31,7 @@
 
 ## 复现材料状态
 
-实际原生构建使用的26份源码改动已全部取回并逐一核验，固定源码快照、离线xmake与Boost依赖、实际补丁的重建工具均随包提供。Linux离线源码和构建依赖准备已通过；完整步骤见 `BUILD-ACTUAL-SOURCES.md`。新整理的可移植构建和启动包装尚未在新分配的DTK环境完成独立复测，不能把本地准备检查当作新的设备构建或生成结果。
+实际原生构建使用的26份源码改动已全部取回并逐一核验，固定源码快照、离线xmake与Boost依赖、实际补丁的重建工具均随包提供。Linux离线源码和构建依赖准备已通过；完整步骤见 `BUILD-ACTUAL-SOURCES.md`。独立八卡作业 `59d92c0f2371` 从固定源码重建并通过八卡组件验证。新构建产物的完整视频补测未取得结果。完整视频数据来自 R2 作业 `9735e4fd51c3`。
 
 `content-manifest.json`列明本提交包每个文件的SHA-256，可先运行 `python scripts/verify_release.py` 核验。38个推理源码文件与R2已通过完整视频的版本逐字节一致；本轮补充的是构建、说明、校验和运行材料。仓库已公开发布，正式模板报告已完成队长审阅并已发送提交邮件。
 

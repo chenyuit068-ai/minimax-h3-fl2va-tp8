@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "candidate": "R2",
-  "status": "REVIEW_READY_NOT_PUBLISHED_NOT_SUBMITTED",
+  "status": "PUBLIC_R2_SOURCE_AND_REPRODUCTION_MATERIALS",
   "created_utc": "2026-11-10T04:55:00+08:00",
   "inference_sources": {
     "assets/original-model-files.json": "4b8c2a9a9cc0a7291b080cf67a6836712f4c3482e43745a3ceb83f014f236786",
@@ -64,8 +64,8 @@
       "sha256": "06a169e02a6a0c874f7129319e6f84f00b3c7e8a48767ab6b9943559075cca6d"
     },
     "BUILD-ACTUAL-SOURCES.md": {
-      "bytes": 5712,
-      "sha256": "84c2f6d9b3aa63a9eaf6488571b7e7be4c45368fbe8a26c6e05b745e5d30ea8b"
+      "bytes": 6127,
+      "sha256": "d77a2493be03460028a6f01e2725f912ae7b2b45e85f7d511bf0edfdf86ba19a"
     },
     "DEPENDENCIES.md": {
       "bytes": 1838,
@@ -84,8 +84,8 @@
       "sha256": "7c172a367eba1a600cdb477947ae182681ca9f7e2bdc99eb9960ffe85e3147e9"
     },
     "evidence/r2-public-result-summary.json": {
-      "bytes": 7895,
-      "sha256": "e076dcc4889463e4a0af4d2c675997eef0aa0d72878dca3693bcc559f2cde877"
+      "bytes": 8296,
+      "sha256": "3647496bc7c9eb689c21caf8df626110d7e8e2724f404aa25469ce8ebc4fed20"
     },
     "evidence/r3-full-video-experiment-summary.json": {
       "bytes": 10454,
@@ -176,8 +176,8 @@
       "sha256": "dc424f02c875ecf0408f52529bc1c2c2c98160a4264a373c3ac787dec76771cf"
     },
     "platform/COMPILER_REPRODUCTION.md": {
-      "bytes": 4716,
-      "sha256": "29084d1fec0de801ba0f724c65c24136796fc1577bc1abc0875819f5625f27fd"
+      "bytes": 5519,
+      "sha256": "801f5013cde3653e532ad3fd78eb60aae23dcd1c15a8fe1ac98efa23376af1d8"
     },
     "platform/hip-scalar-device-properties.patch": {
       "bytes": 3712,
@@ -236,8 +236,8 @@
       "sha256": "b947666281222f79e082283b6f84e68880c499305890f6ab8b03b8bac82456dc"
     },
     "README.md": {
-      "bytes": 4096,
-      "sha256": "34737e7ebbba0e208216a4152d8bbf2018816f6d4c3c857d26555778c88dbddc"
+      "bytes": 5686,
+      "sha256": "c522f574e9f80697dbe47ead386b898a46667f1c6dc0aebba3b48394bd8be325"
     },
     "reproduction/InfiniCore-actual-build.patch": {
       "bytes": 99583,
@@ -480,16 +480,16 @@
       "sha256": "74c2847144698025c9ac6edfa81a1e238c5850640e60203a14fd7fb59ec04537"
     },
     "scripts/rebuild_actual_native.py": {
-      "bytes": 13902,
-      "sha256": "8c05b5de7a27fc89ef95a41013f19da81239ee9329a2dc4d8f21b171ac04d328"
+      "bytes": 15273,
+      "sha256": "75f062f2d7c6ef86240f6c97aaff002f97a2e26cacbd9987c75a3f3e827a2c9d"
     },
     "scripts/run_checks.sh": {
       "bytes": 1564,
       "sha256": "b7dca7b2b7ec737b3c9c34a9888b37c703dae2a203536dabc40cbb3300c4bc21"
     },
     "scripts/run_validated_sample.sh": {
-      "bytes": 3309,
-      "sha256": "0e4921ee5bec436c63d1c8307698aac3e07b2d77e43c645624b794aa6d1af7d8"
+      "bytes": 4005,
+      "sha256": "5ce6f538189e2fe811567a4f1982c7eee19c94350e0538c8673fc8c5857a1914"
     },
     "scripts/segmented_evidence.py": {
       "bytes": 6078,
@@ -754,6 +754,22 @@
     "validate_output.py": {
       "bytes": 2251,
       "sha256": "ac1a7822e1363c2a49e831f4481a91dabdfb86bd71b77c5c3e8331064bab3a07"
+    },
+    "evidence/REPORT_CLAIMS.md": {
+      "bytes": 1870,
+      "sha256": "44b2e4fb2a1d31b92c4297f57ade2d9e385c8e845bbfd5ab842eb462fa32474f"
+    },
+    "examples/README.md": {
+      "bytes": 767,
+      "sha256": "6024f5c1867e39687582671a1344e41ce4c74551aaddf728fe1e03a5b71ce8ce"
+    },
+    "examples/r2-generated.mp4": {
+      "bytes": 1561014,
+      "sha256": "27826d8fe36646802da1307afbc15737a8d2cca161f0d7ba4004ffed29c97c4d"
+    },
+    "scripts/stage_pinned_model_dependencies.py": {
+      "bytes": 2717,
+      "sha256": "d205f43918f4bfe5b8fb1d3f649258737c8934170286405fe0b81fc3716871a6"
     }
   }
 }
